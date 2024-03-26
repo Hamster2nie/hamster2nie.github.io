@@ -2,8 +2,8 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: #222;
-  color: #e5e3dc;
+  background: #faf8ef;
+  color: #776E65;
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
   font-size: 18px;
 }
@@ -892,20 +892,3 @@ hr {
     margin-top: 30px !important;
   }
 }
-div.score-container, div.score-container::after {
-  color: #222;
-}
-
-div.best-container, div.best-container::after {
-  color: #222;
-}
-
-div.tile-inner {
-  color: #222;
-}
-
-.game-over p, .game-won p {
-  color: #222;
-}
-
-/*# sourceMappingURL=main.css.map */
