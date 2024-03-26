@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
   <title>JS Games - Snake</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon192.png">
-  <link rel="apple-touch-icon" href="icon180.png">
   <style>
+    body {background: #222;margin:0px;}
     #g {
       background: #000;
       margin: auto;
@@ -16,21 +13,29 @@
   </style>
   </head>
 <body>
-  <canvas id="g" width="960px" height="1472px"></canvas>
+  <canvas id="g"></canvas>
 </body>
 <script>
-  const LEFT = 11,
+  const 
+  LEFT = 11,
   UP = 12,
   RIGHT = 13,
   DOWN = 14;
-  var ctx = document.getElementById("g").getContext("2d"),
+  var size = {
+    x: Math.floor(window.innerWidth/64),
+    y: Math.floor(window.innerHeight/64)
+  },
+  canvas = document.getElementById("g"),
+  ctx = canvas.getContext("2d"),
   phys_timer,dir,started,pos,food,ctrl_stack,forgive;
+  canvas.width=size.x*64;
+  canvas.height=size.y*64;
   function place_food() {
     var e = true;
     while (e) {
       food = {
-        x: Math.floor(Math.random() * 15),
-        y: Math.floor(Math.random() * 23)
+        x: Math.floor(Math.random() * size.x),
+        y: Math.floor(Math.random() * size.y)
       }
       e = false
       for (var a = 0; a < pos.length; a++)
@@ -38,7 +43,7 @@
     }
   }
   function draw_internal() {
-    if (ctx.clearRect(0, 0, 960, 1472), ctx.fillStyle = "lime", pos.length > 1)
+    if (ctx.clearRect(0, 0, size.x * 64, size.y * 64), ctx.fillStyle = "lime", pos.length > 1)
       for (var e = 1; e < pos.length; e++) {
         var a = pos[e],
           b = pos[e-1],
@@ -78,7 +83,7 @@
     var t = false,
     i = e.x == food.x && e.y == food.y;
     if (!i) {
-      if (e.x<0||e.x>14||e.y<0||e.y>22) {
+      if (e.x<0||e.x>size.x-1||e.y<0||e.y>size.y-1) {
         t = true;
       } else {
         for (var _ = 1; _ < pos.length; _++)
@@ -89,20 +94,20 @@
         }
       t && (forgive==0 ? end_game("Game over!\nYour final length was "+pos.length+"\nWould you like to play again?") : forgive--)
     }
-    t || (i || pos.shift(), pos.push(e), i && (pos.length == 345 ? (food = null, end_game("YOU WON!\nWould you like to play again?")) : place_food()), forgive = 2)
+    t || (i || pos.shift(), pos.push(e), i && (pos.length == size.x * size.y ? (food = null, end_game("YOU WON!\nWould you like to play again?")) : place_food()), forgive = 2)
   }
   function start_game() {
     phys_timer = null;
     dir = 0;
     started = false;
-    pos = [{x:7,y:11}];
+    pos = [{x:Math.ceil(size.x/2),y:Math.ceil(size.y/2)}];
     food = null;
     ctrl_stack = [];
     forgive = 2;
     document.addEventListener("touchstart", function(e) {
       if (e.touches) {
         console.log("down")
-        var tc={x:((e.touches[0].pageX-pos[0].x * 64 - 32)/960),y:((e.touches[0].pageY-pos[0].y * 64 - 32)/960)};
+        var tc={x:((e.touches[0].pageX-pos[0].x * 64 - 32)/Math.min(size.x,size.y)/64),y:((e.touches[0].pageY-pos[0].y * 64 - 32)/Math.min(size.x,size.y)/64)};
         if (tc.x>tc.y) {
           if (tc.x+tc.y>0) {
             ctrl_stack.push(RIGHT);
